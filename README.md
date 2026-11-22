@@ -26,6 +26,10 @@ npm run dev
 
 Create a production build with `npm run build`, preview it with `npm run preview`, run the automated checks with `npm test`, and run static checks with `npm run lint`.
 
+## Deploy
+
+GitHub Pages deploys automatically from the `master` branch through the workflow in `.github/workflows/deploy.yml`. The Vite build uses the repository subpath so its assets load correctly on Pages.
+
 ## Project structure
 
 ```text
@@ -91,7 +95,7 @@ The automated checks cover derived statistics, empty collections, case-insensiti
 - [x] Build, lint, and automated checks
 - [ ] Replace older desktop/mobile/form screenshots with captures of the current app; include one desktop and one mobile screenshot
 - [ ] Push to a public GitHub repository and add its URL
-- [ ] Deploy to a public HTTPS URL and add it here
+- [x] Configure GitHub Pages for a public HTTPS deployment
 
 ## Interview explanation
 
@@ -99,5 +103,5 @@ FocusBoard uses one task array as its source of truth. A reusable local storage 
 
 ## Submission links
 
-- Hosted application: add the public HTTPS deployment URL after deployment.
+- Hosted application: [https://deepikakondru18.github.io/focusBoard/](https://deepikakondru18.github.io/focusBoard/) (publishes after the deployment workflow completes).
 - Public GitHub repository: add the public repository URL after pushing.
