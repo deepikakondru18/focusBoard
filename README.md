@@ -41,7 +41,7 @@ src/
   index.css                   Global styles and design tokens
 tests/
   taskUtils.test.js           Data and persistence unit checks
-screenshots/                  Assessment screenshots (to be added)
+screenshots/                  Desktop and create-task captures
 ```
 
 ## State and persistence
@@ -66,7 +66,7 @@ Counts and completion percentage are derived from the current task array. Search
 | Responsive at 390px, 768px, and 1440px | `src/App.css`, `src/index.css` | Browser viewport checks; no horizontal overflow observed | Complete |
 | Accessible labels, keyboard focus, and delete confirmation | Form and dashboard components | Static code review and browser interaction checks | Implemented; assistive-technology audit not performed |
 | README and AI usage disclosure | `README.md`, `AI_USAGE.md` | Files checked against the reference guide | Complete |
-| Screenshots included in repository | `screenshots/` | Screenshot files are not present yet | Pending |
+| Screenshots included in repository | `screenshots/` | Desktop dashboard and create-task form captures are present; tablet and mobile captures remain | Partial |
 | Public GitHub repository and public HTTPS deployment | Submission links below | Not created; user plans to push the local project | Pending |
 | Compare against the supplied Figma frames | No frames/link were provided | Cannot compare against unavailable design source | Pending input |
 
@@ -78,12 +78,12 @@ FocusBoard is a React task dashboard with a single source of truth for tasks. A 
 
 - Hosted application: pending public deployment.
 - Public GitHub repository: pending push to a public repository.
-- Screenshots: add desktop (1440px), tablet (768px), and mobile (390px) captures to `screenshots/` before submission.
+- Screenshots: `screenshots/dashboard-desktop.png` and `screenshots/create-task-form.png` are included. Add tablet (768px) and mobile (390px) captures before submission.
 
 The supplied assignment PDF references current Figma frames, but no shareable Figma link or exported frame images were available in the provided materials. The visual implementation follows the written frame descriptions and reference guide; exact Figma fidelity remains to be compared when those frames are available.
 
 ## Limitations
 
 - Task data is stored per browser and is not synchronized between devices.
-- Deployment, a public repository, and screenshot files are still required to complete the submission package.
+- Deployment, a public repository, and tablet/mobile screenshots are still required to complete the submission package.
 - Visual matching against the live Figma file has not been possible without access to its frames.
