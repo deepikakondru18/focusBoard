@@ -28,7 +28,7 @@ Create a production build with `npm run build`, preview it with `npm run preview
 
 ## Deploy
 
-GitHub Pages deploys automatically from the `master` branch through the workflow in `.github/workflows/deploy.yml`. The Vite build uses the repository subpath so its assets load correctly on Pages.
+Vercel deploys the `master` branch automatically from the connected GitHub repository. The project uses the Vite preset with the repository root as its build directory. GitHub Pages is also configured as an alternate deployment through `.github/workflows/deploy.yml`.
 
 ## Project structure
 
@@ -94,8 +94,8 @@ The automated checks cover derived statistics, empty collections, case-insensiti
 - [x] README and AI usage disclosure
 - [x] Build, lint, and automated checks
 - [ ] Replace older desktop/mobile/form screenshots with captures of the current app; include one desktop and one mobile screenshot
-- [ ] Push to a public GitHub repository and add its URL
-- [x] Configure GitHub Pages for a public HTTPS deployment
+- [x] Push to a public GitHub repository and add its URL
+- [x] Deploy to public HTTPS hosting through Vercel and GitHub Pages
 
 ## Interview explanation
 
@@ -103,5 +103,6 @@ FocusBoard uses one task array as its source of truth. A reusable local storage 
 
 ## Submission links
 
-- Hosted application: [https://deepikakondru18.github.io/focusBoard/](https://deepikakondru18.github.io/focusBoard/) (publishes after the deployment workflow completes).
-- Public GitHub repository: add the public repository URL after pushing.
+- Hosted application (Vercel): [https://focus-board-topaz.vercel.app/](https://focus-board-topaz.vercel.app/).
+- Alternate deployment (GitHub Pages): [https://deepikakondru18.github.io/focusBoard/](https://deepikakondru18.github.io/focusBoard/).
+- Public GitHub repository: [https://github.com/deepikakondru18/focusBoard](https://github.com/deepikakondru18/focusBoard).
