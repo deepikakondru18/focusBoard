@@ -31,8 +31,16 @@ Run the automated data and persistence checks with `npm test`, and run static ch
 
 ```text
 src/
-  components/FocusNotes.jsx   Focus Notes carousel
-  components/TaskForm.jsx     Shared create/edit form
+  components/
+    FilterTabs.jsx            Status filter tabs
+    FocusNotes.jsx            Focus Notes carousel
+    Header.jsx                Dashboard header
+    SearchBar.jsx             Task title search
+    Sidebar.jsx               Workspace navigation and progress
+    StatCard.jsx              Reusable overview statistic
+    TaskCard.jsx              Task row and task actions
+    TaskForm.jsx              Shared create/edit form
+    TaskList.jsx              Visible task list and empty state
   data/sampleTasks.js         First-run task dataset
   data/taskUtils.js           Derived statistics, filters, ordering
   hooks/useLocalStorage.js    Safe browser persistence hook
@@ -58,7 +66,7 @@ Counts and completion percentage are derived from the current task array. Search
 | Create and edit tasks with form validation | `src/components/TaskForm.jsx`, `src/App.jsx` | Browser create/edit flows and required-title validation | Complete |
 | Delete tasks with confirmation | `src/App.jsx` | Browser confirmed cancel retains task and confirm removes it | Complete |
 | Update task status | `src/App.jsx` | Browser status update and recalculated totals | Complete |
-| Case-insensitive partial title search and empty state | `src/App.jsx` | Browser search, no-results state, and clear filters | Complete |
+| Case-insensitive partial title search and empty state | `src/components/SearchBar.jsx`, `src/components/TaskList.jsx` | Browser search, no-results state, and clear filters | Complete |
 | Status and priority filters work together | `src/data/taskUtils.js` | Unit test and browser combined-filter check | Complete |
 | Dynamic totals and completion percentage | `src/data/taskUtils.js` | Unit tests cover populated and empty collections | Complete |
 | Three-slide Focus Notes carousel | `src/components/FocusNotes.jsx` | Browser previous/next and indicator navigation | Complete |
