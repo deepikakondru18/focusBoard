@@ -1,8 +1,8 @@
 # AI Usage Disclosure
 
-## Tools used
+## Tool used
 
-- OpenAI Codex (GPT-6) for implementation support, code review, and documentation.
+OpenAI Codex (GPT-6) supported implementation, code review, and documentation.
 
 ## Representative prompts
 
@@ -12,15 +12,14 @@
 
 ## AI-assisted areas
 
-- Project scaffolding and component structure.
-- Dashboard styles and responsive behavior.
-- Task state, form validation, derived statistics, filters, and carousel interactions.
+- Project scaffolding, component structure, and responsive dashboard styling.
+- Task state, form validation, derived statistics, filters, carousel behavior, and local storage persistence.
 - README and this disclosure.
 
-## Suggestion reviewed
+## Design source
 
-The reference guide suggests matching the supplied Figma frames as the visual source of truth. I checked the supplied files, but they did not include a shareable Figma URL or exported frames. The current styling is based on the assignment’s written frame descriptions; the exact visual match still needs review against the frames when available.
+The assignment PDF embeds the Figma file and links for the desktop dashboard, mobile dashboard, task form, and carousel slides. The interface was updated against those frames. The written reference guide asks for a To do tab that the dashboard frame omits, so the implementation includes the tab to satisfy the written requirement.
 
 ## Understanding and verification
 
-The task collection is held in React state and synchronized to `localStorage`. Counts and filtered rows are derived from that collection, and task actions replace state immutably. Automated tests cover statistics, combined filters, search, ordering, and storage recovery/write behavior.
+The task collection is held in React state and synchronized to `localStorage`. Counts and filtered rows are derived from that collection, and task actions update it immutably. Automated checks cover statistics, combined filters, search, ordering, and storage recovery/write behavior. The current project passes lint, production build, and all six automated checks.

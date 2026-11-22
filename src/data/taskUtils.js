@@ -9,12 +9,12 @@ export function getTaskStats(tasks) {
   }
 }
 
-export function getVisibleTasks(tasks, { query = '', status = 'All tasks', priority = 'All priorities', reverse = false } = {}) {
+export function getVisibleTasks(tasks, { query = '', status = 'All tasks', priority = 'All', reverse = false } = {}) {
   const normalizedQuery = query.trim().toLocaleLowerCase()
   const visible = tasks.filter((task) => {
     const matchesQuery = task.title.toLocaleLowerCase().includes(normalizedQuery)
     const matchesStatus = status === 'All tasks' || task.status === status
-    const matchesPriority = priority === 'All priorities' || task.priority === priority
+    const matchesPriority = priority === 'All' || priority === 'All priorities' || task.priority === priority
     return matchesQuery && matchesStatus && matchesPriority
   })
   return reverse ? visible.reverse() : visible

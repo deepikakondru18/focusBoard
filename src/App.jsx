@@ -1,9 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { ArrowDownUp, Check, ChevronDown, Clock3, ListTodo, Plus, SlidersHorizontal, Trash2 } from 'lucide-react'
+import { Check, CircleDashed, ListTodo, Plus } from 'lucide-react'
 import FilterTabs from './components/FilterTabs'
+import CalendarView from './components/CalendarView'
 import FocusNotes from './components/FocusNotes'
 import Header from './components/Header'
+import MobileNav from './components/MobileNav'
 import SearchBar from './components/SearchBar'
+import SettingsView from './components/SettingsView'
 import Sidebar from './components/Sidebar'
 import StatCard from './components/StatCard'
 import TaskForm from './components/TaskForm'
@@ -13,22 +16,16 @@ import { getTaskStats, getVisibleTasks } from './data/taskUtils'
 import { useLocalStorage } from './hooks/useLocalStorage'
 import './App.css'
 
-const todayLabel = new Intl.DateTimeFormat('en', {
-  weekday: 'long',
-  month: 'long',
-  day: 'numeric',
-}).format(new Date()).toLocaleUpperCase()
-
 function App() {
   const [tasks, setTasks] = useLocalStorage('focusboard_tasks', sampleTasks)
+  const [settings, setSettings] = useLocalStorage('focusboard_settings', { firstDayOfWeek: 'Sunday', showCompletedInCalendar: true })
   const [query, setQuery] = useState('')
   const [status, setStatus] = useState('All tasks')
-  const [priority, setPriority] = useState('All priorities')
+  const [priority, setPriority] = useState('All')
   const [formTask, setFormTask] = useState(null)
   const [formOpen, setFormOpen] = useState(false)
   const [deleteCandidate, setDeleteCandidate] = useState(null)
-  const [mobileNav, setMobileNav] = useState(false)
-  const [sortNewest, setSortNewest] = useState(false)
+  const [activePage, setActivePage] = useState('overview')
   const searchInput = useRef(null)
 
   useEffect(() => {
@@ -38,16 +35,20 @@ function App() {
         searchInput.current?.focus()
       }
     }
-
     window.addEventListener('keydown', focusSearch)
     return () => window.removeEventListener('keydown', focusSearch)
   }, [])
 
   const stats = useMemo(() => getTaskStats(tasks), [tasks])
   const filteredTasks = useMemo(
-    () => getVisibleTasks(tasks, { query, status, priority, reverse: sortNewest }),
-    [tasks, query, status, priority, sortNewest],
+    () => getVisibleTasks(tasks, { query, status, priority }),
+    [tasks, query, status, priority],
   )
+
+  const openCreateForm = () => {
+    setFormTask(null)
+    setFormOpen(true)
+  }
 
   const saveTask = (task) => {
     setTasks((current) => formTask
@@ -67,6 +68,14 @@ function App() {
     setFormTask(null)
   }
 
+  const changeStatus = (id, nextStatus) => {
+    setTasks((current) => current.map((task) => task.id === id ? {
+      ...task,
+      status: nextStatus,
+      progress: nextStatus === 'Completed' ? 100 : nextStatus === 'To do' ? 0 : task.status === 'Completed' ? 67 : Math.min(task.progress ?? 1, 99),
+    } : task))
+  }
+
   const confirmDelete = () => {
     if (deleteCandidate) {
       setTasks((current) => current.filter((item) => item.id !== deleteCandidate.id))
@@ -74,107 +83,87 @@ function App() {
     setDeleteCandidate(null)
   }
 
-  const changeStatus = (id, nextStatus) => {
-    setTasks((current) => current.map((task) => (
-      task.id === id ? { ...task, status: nextStatus } : task
-    )))
-  }
-
   const resetFilters = () => {
     setQuery('')
     setStatus('All tasks')
-    setPriority('All priorities')
+    setPriority('All')
   }
 
-  const openCreateForm = () => {
-    setFormTask(null)
-    setFormOpen(true)
+  const showOverview = () => {
+    setActivePage('overview')
+    resetFilters()
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  const showTasks = () => {
+    setActivePage('tasks')
+    window.requestAnimationFrame(() => window.requestAnimationFrame(() => {
+      document.getElementById('tasks-heading')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }))
+  }
+
+  const showPage = (page) => {
+    setActivePage(page)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   return (
     <div className="app-shell">
-      <Sidebar
-        active={stats}
-        onSelect={setStatus}
-        open={mobileNav}
-        onClose={() => setMobileNav(false)}
-      />
+      <Sidebar activePage={activePage} onOverview={showOverview} onTasks={showTasks} onCalendar={() => showPage('calendar')} onSettings={() => showPage('settings')} />
       <main className="main-content">
-        <Header onOpenNav={() => setMobileNav(true)} />
+        <Header activePage={activePage} />
+        {activePage === 'calendar' ? (
+          <div className="page-content"><CalendarView tasks={tasks} settings={settings} onEditTask={editTask} onCreateTask={openCreateForm} /></div>
+        ) : activePage === 'settings' ? (
+          <div className="page-content"><SettingsView settings={settings} onSettingsChange={setSettings} taskCount={tasks.length} /></div>
+        ) : (
         <div className="page-content">
           <section className="welcome-row">
             <div>
-              <div className="date-label">{todayLabel}</div>
-              <h1>Good morning, Alex <span className="wave">✳</span></h1>
-              <p className="welcome-subtitle">A little focus goes a long way. Here’s your day in view.</p>
+              <h1>Your work, in focus.</h1>
+              <p className="welcome-subtitle">Plan your day, stay organized, and celebrate small wins.</p>
             </div>
             <button className="button button-primary add-task-button" onClick={openCreateForm}>
-              <Plus size={17} /> Add a task
+              <Plus size={16} /> New task
             </button>
           </section>
 
+          <FocusNotes tasks={tasks} />
+
           <section className="stats-grid" aria-label="Task overview">
-            <StatCard icon={ListTodo} label="Total tasks" value={stats.total} note="Across your workspace" color="purple" />
-            <StatCard icon={Clock3} label="In progress" value={stats.inProgress} note="Keep the momentum" color="amber" />
-            <StatCard icon={Check} label="Completed" value={stats.completed} note="Look at you go" color="green" />
-            <article className="stat-card progress-stat">
-              <div className="progress-ring" style={{ '--progress': `${stats.percent * 3.6}deg` }}>
-                <span>{stats.percent}<small>%</small></span>
-              </div>
-              <span className="stat-label">Completion</span>
-              <strong className="stat-value">{stats.percent}%</strong>
-              <span className="stat-note">You’re making progress</span>
-            </article>
+            <StatCard icon={ListTodo} label="Total tasks" value={stats.total} note="Across all projects" color="purple" />
+            <StatCard icon={CircleDashed} label="In progress" value={stats.inProgress} note="Keep the momentum" color="blue" />
+            <StatCard icon={Check} label="Completed" value={stats.completed} note={`${stats.percent}% of tasks complete`} color="green" />
           </section>
 
-          <div className="overview-grid">
-            <FocusNotes />
-            <aside className="daily-card">
-              <div className="daily-art">
-                <div className="sun-shape" />
-                <div className="plant plant-one" />
-                <div className="plant plant-two" />
-                <div className="plant-pot" />
-              </div>
-              <div className="daily-copy">
-                <span className="eyebrow">YOUR DAILY PAUSE</span>
-                <h2>One thing at a time.</h2>
-                <p>You don’t have to do it all at once. Start with what feels right.</p>
-              </div>
-            </aside>
-          </div>
-
-          <section className="tasks-section" aria-labelledby="tasks-heading">
+          <section className="tasks-section" aria-labelledby="tasks-heading" id="tasks-section">
             <div className="section-heading">
               <div>
-                <div className="eyebrow">YOUR WORK, GENTLY ORGANIZED</div>
-                <h2 id="tasks-heading">My tasks <span className="task-total">{stats.total}</span></h2>
+                <h2 id="tasks-heading">My tasks</h2>
+                <p>Manage and track everything in one place.</p>
               </div>
-              <button className="text-button" onClick={resetFilters}>View all <span aria-hidden="true">→</span></button>
-            </div>
-
-            <div className="task-controls">
-              <SearchBar inputRef={searchInput} query={query} onQueryChange={setQuery} />
-              <label className="priority-select">
-                <SlidersHorizontal size={15} />
-                <select aria-label="Filter by priority" value={priority} onChange={(event) => setPriority(event.target.value)}>
-                  <option>All priorities</option>
-                  <option>High</option>
-                  <option>Medium</option>
-                  <option>Low</option>
-                </select>
-                <ChevronDown size={14} />
-              </label>
-              <button
-                className={`sort-button ${sortNewest ? 'sort-active' : ''}`}
-                aria-label="Reverse task order"
-                onClick={() => setSortNewest((value) => !value)}
-              >
-                <ArrowDownUp size={15} />
+              <button className="text-button" onClick={resetFilters}>View all tasks <span aria-hidden="true">→</span></button>
+              <button className="button button-primary mobile-add-task" onClick={openCreateForm} aria-label="Create a new task">
+                <Plus size={18} />
               </button>
             </div>
 
-            <FilterTabs tasks={tasks} status={status} onStatusChange={setStatus} />
+            <div className="task-toolbar">
+              <FilterTabs tasks={tasks} status={status} onStatusChange={setStatus} />
+              <div className="task-controls">
+                <SearchBar inputRef={searchInput} query={query} onQueryChange={setQuery} />
+                <label className="priority-select">
+                  <span>Priority:</span>
+                  <select aria-label="Filter by priority" value={priority} onChange={(event) => setPriority(event.target.value)}>
+                    <option value="All">All</option>
+                    <option>High</option>
+                    <option>Medium</option>
+                    <option>Low</option>
+                  </select>
+                </label>
+              </div>
+            </div>
+
             <TaskList
               tasks={filteredTasks}
               onEdit={editTask}
@@ -182,24 +171,19 @@ function App() {
               onStatusChange={changeStatus}
               onClearFilters={resetFilters}
             />
-            <div className="list-footer">
-              <span>Showing <strong>{filteredTasks.length}</strong> of <strong>{tasks.length}</strong> tasks</span>
-              <button className="button button-quiet footer-add" onClick={openCreateForm}><Plus size={15} /> Add task</button>
-            </div>
           </section>
 
-          <footer className="page-footer">
-            <span>Made for a little more focus <span className="footer-spark">✳</span></span>
-            <span>Take it one task at a time.</span>
-          </footer>
+          <footer className="page-footer">Take it one task at a time.</footer>
         </div>
+        )}
       </main>
 
+      <MobileNav activePage={activePage} onOverview={showOverview} onTasks={showTasks} onCalendar={() => showPage('calendar')} onSettings={() => showPage('settings')} />
       {formOpen && <TaskForm key={formTask?.id ?? 'new'} task={formTask} onSave={saveTask} onClose={closeForm} />}
       {deleteCandidate && (
         <div className="dialog-backdrop" onMouseDown={(event) => event.target === event.currentTarget && setDeleteCandidate(null)}>
           <section className="confirm-dialog" role="alertdialog" aria-modal="true" aria-labelledby="delete-heading" aria-describedby="delete-description">
-            <div className="confirm-icon"><Trash2 size={19} /></div>
+            <div className="confirm-icon"><Check size={19} /></div>
             <h2 id="delete-heading">Delete this task?</h2>
             <p id="delete-description"><strong>{deleteCandidate.title}</strong> will be removed from your task list. This can’t be undone.</p>
             <div className="dialog-actions">

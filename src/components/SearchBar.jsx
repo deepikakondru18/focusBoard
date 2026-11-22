@@ -7,7 +7,7 @@ export default function SearchBar({ inputRef, query, onQueryChange }) {
       <input
         ref={inputRef}
         aria-label="Search tasks by title"
-        placeholder="Search tasks..."
+        placeholder="Find a task..."
         value={query}
         onChange={(event) => onQueryChange(event.target.value)}
       />
@@ -16,7 +16,6 @@ export default function SearchBar({ inputRef, query, onQueryChange }) {
           <X size={15} />
         </button>
       )}
-      <kbd>Ctrl K</kbd>
     </div>
   )
 }

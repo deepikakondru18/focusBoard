@@ -1,17 +1,18 @@
-import { Clock3, Menu } from 'lucide-react'
+import { Target } from 'lucide-react'
 
-const initials = 'AM'
+const initials = 'JD'
+const pageNames = { overview: 'Overview', tasks: 'My tasks', calendar: 'Calendar', settings: 'Settings' }
 
-export default function Header({ onOpenNav }) {
+export default function Header({ activePage }) {
   return (
     <header className="topbar">
-      <button className="icon-button mobile-menu" onClick={onOpenNav} aria-label="Open navigation">
-        <Menu size={21} />
-      </button>
-      <div className="breadcrumb">Workspace <span>/</span> <strong>Dashboard</strong></div>
+      <div className="mobile-brand">
+        <span className="brand-mark"><Target size={17} strokeWidth={2.4} /></span>
+        <span>Focus<span className="brand-strong">Board</span></span>
+      </div>
+      <div className="breadcrumb">Workspace <span>/</span> <strong>{pageNames[activePage] ?? 'Overview'}</strong></div>
       <div className="topbar-actions">
-        <span className="today-label"><Clock3 size={15} /> Your day, at a glance</span>
-        <div className="avatar top-avatar">{initials}</div>
+        <div className="avatar top-avatar" aria-label="User profile">{initials}</div>
       </div>
     </header>
   )

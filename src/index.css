@@ -1,9 +1,29 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
-:root{font-family:'DM Sans',sans-serif;color:#27263a;background:#f7f7fb;font-synthesis:none;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;font-optical-sizing:auto;font-weight:400;--ink:#28273b;--muted:#89899a;--purple:#7663d8;--purple-dark:#6553c5;--line:#eeedf3;--panel:#fff;--soft:#f5f3ff}
-*{box-sizing:border-box}
-body{margin:0;min-width:320px;min-height:100vh}
-button,input,select,textarea{font:inherit}
-button{color:inherit}
-button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #b5a8ff;outline-offset:2px}
-::selection{background:#e5dfff;color:#3c326e}
+:root {
+  font-family: Inter, Arial, sans-serif;
+  color: #222230;
+  background: #f7f7fb;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  --ink: #222230;
+  --muted: #7e7e8f;
+  --purple: #6854f4;
+  --purple-dark: #5844e5;
+  --line: #e8e8f0;
+  --panel: #fff;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; min-width: 320px; min-height: 100vh; }
+button, input, select, textarea { font: inherit; }
+button { color: inherit; }
+button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline: 3px solid #b6aaff;
+  outline-offset: 2px;
+}
+::selection { background: #e5dfff; color: #3c326e; }

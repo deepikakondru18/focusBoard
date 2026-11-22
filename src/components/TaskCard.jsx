@@ -1,4 +1,5 @@
-import { CalendarDays, Check, ChevronDown, Pencil, Trash2 } from 'lucide-react'
+import { useState } from 'react'
+import { CalendarDays, Check, MoreHorizontal } from 'lucide-react'
 
 function formatDate(value) {
   if (!value) return 'No date'
@@ -7,35 +8,52 @@ function formatDate(value) {
 }
 
 export default function TaskCard({ task, onEdit, onDelete, onStatusChange }) {
+  const [menuOpen, setMenuOpen] = useState(false)
+  const toggleComplete = () => onStatusChange(task.id, task.status === 'Completed' ? 'To do' : 'Completed')
+  const chooseStatus = (status) => {
+    onStatusChange(task.id, status)
+    setMenuOpen(false)
+  }
+
   return (
     <article className={`task-row ${task.status === 'Completed' ? 'task-complete' : ''}`}>
-      <div className={`task-check ${task.status === 'Completed' ? 'checked' : ''}`} aria-hidden="true">
+      <button
+        className={`task-check ${task.status === 'Completed' ? 'checked' : ''}`}
+        aria-label={task.status === 'Completed' ? `Mark ${task.title} not completed` : `Mark ${task.title} complete`}
+        aria-pressed={task.status === 'Completed'}
+        onClick={toggleComplete}
+      >
         {task.status === 'Completed' && <Check size={13} />}
-      </div>
+      </button>
       <div className="task-main">
-        <div className="task-title-line">
-          <h3>{task.title}</h3>
-          <span className={`priority-dot priority-${task.priority.toLowerCase()}`} title={`${task.priority} priority`} />
-        </div>
+        <div className="task-title-line"><h3>{task.title}</h3></div>
         <p>{task.description || 'No description added.'}</p>
-        <div className="task-meta">
-          <span className="category-chip">{task.category || 'General'}</span>
-          <span className="due-meta"><CalendarDays size={13} /> {formatDate(task.dueDate)}</span>
-        </div>
       </div>
-      <label className={`status-pill status-${task.status.toLowerCase().replace(' ', '-')}`}>
-        <span className="status-dot" />
-        <span className="visually-hidden">Status: </span>
-        <select aria-label={`Change status for ${task.title}`} value={task.status} onChange={(event) => onStatusChange(task.id, event.target.value)}>
-          <option>To do</option>
-          <option>In progress</option>
-          <option>Completed</option>
-        </select>
-        <ChevronDown size={13} />
-      </label>
+      <div className="task-meta">
+        <span className="category-chip">{task.category || 'General'}</span>
+        <span className={`priority-tag priority-${task.priority.toLowerCase()}`}>{task.priority}</span>
+        <span className="due-meta"><CalendarDays size={13} /> {formatDate(task.dueDate)}</span>
+      </div>
       <div className="task-actions">
-        <button className="icon-button row-action" aria-label={`Edit ${task.title}`} onClick={() => onEdit(task)}><Pencil size={15} /></button>
-        <button className="icon-button row-action delete-action" aria-label={`Delete ${task.title}`} onClick={() => onDelete(task)}><Trash2 size={15} /></button>
+        <button
+          className="icon-button row-action"
+          aria-label={`Actions for ${task.title}`}
+          aria-haspopup="menu"
+          aria-expanded={menuOpen}
+          onClick={() => setMenuOpen((open) => !open)}
+        >
+          <MoreHorizontal size={17} />
+        </button>
+        {menuOpen && (
+          <div className="action-menu" role="menu" aria-label={`Actions for ${task.title}`}>
+            <button role="menuitem" onClick={() => { setMenuOpen(false); onEdit(task) }}>Edit task</button>
+            <div className="action-menu-label">Change status</div>
+            {['To do', 'In progress', 'Completed'].map((status) => (
+              <button role="menuitemradio" aria-checked={task.status === status} key={status} onClick={() => chooseStatus(status)}>{status}</button>
+            ))}
+            <button className="danger-action" role="menuitem" onClick={() => { setMenuOpen(false); onDelete(task) }}>Delete task</button>
+          </div>
+        )}
       </div>
     </article>
   )
